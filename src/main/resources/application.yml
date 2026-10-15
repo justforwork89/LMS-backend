@@ -1,0 +1,11 @@
+
+spring:
+  application:
+    name: DY_LMS
+  profiles:
+    default: local        # 프로필 미지정 시 local 사용
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true   # USER_NAME → userName 자동 매핑
