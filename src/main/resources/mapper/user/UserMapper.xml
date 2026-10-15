@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dy.lms.user.UserMapper">
+
+	<select id="findById" resultType="com.dy.lms.user.User">
+		SELECT USER_ID, PASSWORD, USER_NAME, ROLE_CD, MAJOR, USE_YN
+		  FROM TB_USER
+		 WHERE USER_ID = #{userId}
+	</select>
+
+</mapper>

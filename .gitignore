@@ -41,3 +41,8 @@ out/
 .env
 .env.*
 application-secret*.yml
+
+
+### log ###
+*.log
+run.log
