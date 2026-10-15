@@ -6,6 +6,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -19,5 +21,11 @@ public class SecurityConfig {
 			.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(a -> a.anyRequest().permitAll()); // TODO: 3단계에서 인증/권한 적용
 		return http.build();
+	}
+	
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }
