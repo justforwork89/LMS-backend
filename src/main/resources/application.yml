@@ -4,7 +4,8 @@ spring:
     name: DY_LMS
   profiles:
     default: local        # 프로필 미지정 시 local 사용
-
+  flyway:
+    locations: classpath:db/sql
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   configuration:
