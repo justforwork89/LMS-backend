@@ -3,11 +3,19 @@ package com.dy.lms.auth;
 import com.dy.lms.user.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+// JwtTokenProvider에 검증 메서드 추가
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import java.util.Optional;
+
+
 
 @Component
 public class JwtTokenProvider {
@@ -31,5 +39,16 @@ public class JwtTokenProvider {
                 .expiration(new Date(now.getTime() + expirationMillis))
                 .signWith(key)
                 .compact();
+    }
+    
+    /** 유효한 토큰이면 Claims, 아니면 빈 값 (만료·위조·형식오류 모두 포함) */
+    public Optional<Claims> parse(String token) {
+        try {
+            Claims claims = Jwts.parser().verifyWith(key).build()
+                    .parseSignedClaims(token).getPayload();
+            return Optional.of(claims);
+        } catch (JwtException | IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 }
