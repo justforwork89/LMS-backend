@@ -2,6 +2,8 @@
 spring:
   application:
     name: DY_LMS
+  config:
+    import: "optional:file:.env[.properties]" # .env file load
   profiles:
     default: local        # 프로필 미지정 시 local 사용
   flyway:
