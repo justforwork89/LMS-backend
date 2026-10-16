@@ -1,6 +1,6 @@
-package com.dy.lms.auth.dto;
+package com.dy.lms.dto;
 
-import com.dy.lms.user.User;
+import com.dy.lms.domain.User;
 
 public record UserResponse(String id, String name, String role, String major, boolean active) {
     public static UserResponse from(User u) {

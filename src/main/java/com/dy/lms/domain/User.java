@@ -1,4 +1,6 @@
-package com.dy.lms.user;
+package com.dy.lms.domain;
+
+import com.dy.lms.common.type.Role;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

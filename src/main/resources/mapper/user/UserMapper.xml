@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dy.lms.user.UserMapper">
+<mapper namespace="com.dy.lms.mapper.UserMapper">
 
-	<select id="findById" resultType="com.dy.lms.user.User">
+	<select id="findById" resultType="User">
+	/* com.dy.lms.mapper.UserMapper.findById */
 		SELECT USER_ID, PASSWORD, USER_NAME, ROLE_CD, MAJOR, USE_YN
 		  FROM TB_USER
 		 WHERE USER_ID = #{userId}
 	</select>
 
 
-    <select id="findAll" resultType="com.dy.lms.user.User">
+    <select id="findAll" resultType="User">
         SELECT USER_ID, PASSWORD, USER_NAME, ROLE_CD, MAJOR, USE_YN
         FROM TB_USER
         ORDER BY USER_ID
     </select>
 
-    <insert id="insert" parameterType="com.dy.lms.user.User">
+    <insert id="insert" parameterType="User">
         INSERT INTO TB_USER (USER_ID, PASSWORD, USER_NAME, ROLE_CD, MAJOR, USE_YN)
         VALUES (#{userId}, #{password}, #{userName}, #{roleCd}, #{major}, #{useYn})
     </insert>
 
-    <update id="update" parameterType="com.dy.lms.user.User">
+    <update id="update" parameterType="User">
         UPDATE TB_USER
         <set>
             USER_NAME = #{userName},
             ROLE_CD = #{roleCd},
             MAJOR = #{major},
-            USE_YN = #{useYn},
             <if test="password != null">PASSWORD = #{password},</if>
+            USE_YN = #{useYn}
         </set>
         WHERE USER_ID = #{userId}
     </update>

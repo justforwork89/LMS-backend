@@ -1,8 +1,10 @@
-package com.dy.lms.auth;
+package com.dy.lms.controller;
 
-import com.dy.lms.auth.dto.LoginRequest;
-import com.dy.lms.auth.dto.LoginResponse;
 import com.dy.lms.common.ApiResponse;
+import com.dy.lms.dto.LoginRequest;
+import com.dy.lms.dto.LoginResponse;
+import com.dy.lms.service.AuthService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

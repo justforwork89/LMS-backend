@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<!-- 그 메서드에 대응하는 실제 SQL입니다. -->        
+<mapper namespace="com.dy.lms.mapper.CourseMapper">
+
+    <sql id="selectCourse">
+        SELECT c.COURSE_ID, c.COURSE_NAME, c.DESCRIPTION, c.INSTRUCTOR_ID,
+               u.USER_NAME AS INSTRUCTOR_NAME,
+               c.MAJOR, c.START_DATE, c.END_DATE, c.CAPACITY, c.ENROLLED_CNT,
+               c.STATUS_CD, s.CODE_NAME AS STATUS_NAME
+        FROM TB_COURSE c
+        JOIN TB_USER u ON u.USER_ID = c.INSTRUCTOR_ID
+        LEFT JOIN TB_COMMON_CODE s
+               ON s.GROUP_CD = 'COURSE_STATUS' AND s.CODE = c.STATUS_CD
+    </sql>
+
+<!--    <select id="findAll" resultType="Course">
+        <include refid="selectCourse"/>
+        ORDER BY c.COURSE_ID DESC
+    </select>-->
+    
+        <select id="findAll" resultType="Course">
+        <include refid="selectCourse"/>
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND LOWER(c.COURSE_NAME) LIKE '%' || LOWER(#{keyword}) || '%'
+            </if>
+            <if test="statusCd != null and statusCd != ''">
+                AND c.STATUS_CD = #{statusCd}
+            </if>
+        </where>
+        ORDER BY c.COURSE_ID DESC
+    </select>
+
+    <delete id="delete">
+        DELETE FROM TB_COURSE WHERE COURSE_ID = #{courseId}
+    </delete>
+    
+
+    <select id="findById" resultType="Course">
+        <include refid="selectCourse"/>
+        WHERE c.COURSE_ID = #{courseId}
+    </select>
+
+    <insert id="insert" parameterType="Course"
+            useGeneratedKeys="true" keyProperty="courseId" keyColumn="COURSE_ID">
+        INSERT INTO TB_COURSE (COURSE_NAME, DESCRIPTION, INSTRUCTOR_ID, MAJOR,
+                               START_DATE, END_DATE, CAPACITY, STATUS_CD)
+        VALUES (#{courseName}, #{description}, #{instructorId}, #{major},
+                #{startDate}, #{endDate}, #{capacity}, #{statusCd})
+    </insert>
+
+    <update id="update" parameterType="Course">
+        UPDATE TB_COURSE
+        SET COURSE_NAME = #{courseName},
+            DESCRIPTION = #{description},
+            MAJOR = #{major},
+            START_DATE = #{startDate},
+            END_DATE = #{endDate},
+            CAPACITY = #{capacity},
+            STATUS_CD = #{statusCd}
+        WHERE COURSE_ID = #{courseId}
+    </update>
+
+</mapper>

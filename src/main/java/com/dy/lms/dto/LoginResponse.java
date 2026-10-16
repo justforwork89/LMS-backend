@@ -1,4 +1,4 @@
-package com.dy.lms.auth.dto;
+package com.dy.lms.dto;
 
 public record LoginResponse(String token, UserResponse user) {
 }

@@ -1,18 +1,7 @@
 package com.dy.lms.config;
 
-// 초기
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.security.config.Customizer;
-//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-//import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-//import org.springframework.security.config.http.SessionCreationPolicy;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder; 
-//import org.springframework.security.web.SecurityFilterChain;
-
-import com.dy.lms.auth.JwtAuthenticationFilter;
 import com.dy.lms.common.ApiResponse;
+import com.dy.lms.common.security.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -48,6 +37,13 @@ public class SecurityConfig {
 		                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 		                .requestMatchers("/api/auth/login", "/api/health").permitAll()
 		                .requestMatchers("/api/users/**").hasRole("ADMIN")
+		                .requestMatchers(HttpMethod.POST, "/api/courses").hasAnyRole("INSTRUCTOR", "ADMIN")
+		                .requestMatchers(HttpMethod.PUT, "/api/courses/**").hasAnyRole("INSTRUCTOR", "ADMIN")
+		                .requestMatchers(HttpMethod.DELETE, "/api/courses/**").hasAnyRole("INSTRUCTOR", "ADMIN")
+		                .requestMatchers(HttpMethod.GET, "/api/codes").hasRole("ADMIN")
+		                .requestMatchers(HttpMethod.POST, "/api/codes").hasRole("ADMIN")
+		                .requestMatchers(HttpMethod.PUT, "/api/codes/**").hasRole("ADMIN")
+		                .requestMatchers(HttpMethod.DELETE, "/api/codes/**").hasRole("ADMIN")
 		                .anyRequest().authenticated())
 		            .exceptionHandling(e -> e
 		                .authenticationEntryPoint((req, res, ex) -> {

@@ -1,7 +1,9 @@
-package com.dy.lms.user;
+package com.dy.lms.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import com.dy.lms.domain.User;
 
 @Mapper
 public interface UserMapper {

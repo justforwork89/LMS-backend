@@ -1,4 +1,4 @@
-package com.dy.lms.auth;
+package com.dy.lms.common.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

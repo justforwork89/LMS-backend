@@ -1,4 +1,4 @@
-package com.dy.lms.user;
+package com.dy.lms.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

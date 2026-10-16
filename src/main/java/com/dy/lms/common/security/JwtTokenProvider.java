@@ -1,6 +1,5 @@
-package com.dy.lms.auth;
+package com.dy.lms.common.security;
 
-import com.dy.lms.user.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -9,6 +8,8 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.dy.lms.common.type.Role;
 
 // JwtTokenProvider에 검증 메서드 추가
 import io.jsonwebtoken.Claims;

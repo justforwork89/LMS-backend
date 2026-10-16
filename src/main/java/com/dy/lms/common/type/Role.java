@@ -1,4 +1,4 @@
-package com.dy.lms.user;
+package com.dy.lms.common.type;
 
 public enum Role {
 	STUDENT("S"), INSTRUCTOR("T"), ADMIN("A");

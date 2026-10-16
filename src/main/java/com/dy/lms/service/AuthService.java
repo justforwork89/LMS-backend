@@ -1,11 +1,13 @@
-package com.dy.lms.auth;
+package com.dy.lms.service;
 
-import com.dy.lms.auth.dto.LoginRequest;
-import com.dy.lms.auth.dto.LoginResponse;
-import com.dy.lms.auth.dto.UserResponse;
 import com.dy.lms.common.BusinessException;
-import com.dy.lms.user.User;
-import com.dy.lms.user.UserMapper;
+import com.dy.lms.common.security.JwtTokenProvider;
+import com.dy.lms.domain.User;
+import com.dy.lms.dto.LoginRequest;
+import com.dy.lms.dto.LoginResponse;
+import com.dy.lms.dto.UserResponse;
+import com.dy.lms.mapper.UserMapper;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;

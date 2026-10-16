@@ -1,7 +1,13 @@
-package com.dy.lms.user;
+package com.dy.lms.service;
 
-import com.dy.lms.auth.dto.UserResponse;
 import com.dy.lms.common.BusinessException;
+import com.dy.lms.common.type.Role;
+import com.dy.lms.domain.User;
+import com.dy.lms.dto.InstructorResponse;
+import com.dy.lms.dto.UserRequest;
+import com.dy.lms.dto.UserResponse;
+import com.dy.lms.mapper.UserMapper;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -61,5 +67,20 @@ public class UserService {
         user.setMajor(req.major());
         user.setUseYn(req.active() ? "Y" : "N");
         return user;
+    }
+    
+    /** 사용 중인 강사인지 확인 (강의 배정용). 아니면 예외 */
+    public void assertActiveInstructor(String userId) {
+        User u = userMapper.findById(userId);
+        if (u == null || !u.isActive() || u.getRole() != Role.INSTRUCTOR) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효한 강사가 아닙니다.");
+        }
+    }
+    
+    public List<InstructorResponse> findActiveInstructors() {
+        return userMapper.findAll().stream()
+                .filter(u -> u.isActive() && u.getRole() == Role.INSTRUCTOR)
+                .map(u -> new InstructorResponse(u.getUserId(), u.getUserName()))
+                .toList();
     }
 }
