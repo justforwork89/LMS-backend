@@ -14,6 +14,7 @@
         JOIN TB_USER u ON u.USER_ID = c.INSTRUCTOR_ID
         LEFT JOIN TB_COMMON_CODE s
                ON s.GROUP_CD = 'COURSE_STATUS' AND s.CODE = c.STATUS_CD
+        WHERE 1 = 1      
     </sql>
 
 <!--    <select id="findAll" resultType="Course">
@@ -22,15 +23,13 @@
     </select>-->
     
         <select id="findAll" resultType="Course">
-        <include refid="selectCourse"/>
-        <where>
+        <include refid="selectCourse"/> 
             <if test="keyword != null and keyword != ''">
                 AND LOWER(c.COURSE_NAME) LIKE '%' || LOWER(#{keyword}) || '%'
             </if>
             <if test="statusCd != null and statusCd != ''">
                 AND c.STATUS_CD = #{statusCd}
-            </if>
-        </where>
+            </if> 
         ORDER BY c.COURSE_ID DESC
     </select>
 
@@ -41,7 +40,7 @@
 
     <select id="findById" resultType="Course">
         <include refid="selectCourse"/>
-        WHERE c.COURSE_ID = #{courseId}
+        AND c.COURSE_ID = #{courseId}
     </select>
 
     <insert id="insert" parameterType="Course"
