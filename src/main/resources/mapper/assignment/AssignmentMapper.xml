@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.dy.lms.mapper.AssignmentMapper">
+	<select id="findAll" resultType="Assignment">
+		SELECT a.ASSIGNMENT_ID, a.COURSE_ID, a.TITLE, a.CONTENT, a.DUE_DATE
+		FROM TB_ASSIGNMENT a
+		<where>
+			<if test="courseIds != null and !courseIds.isEmpty()">
+				a.COURSE_ID IN
+				<foreach collection="courseIds" item="id" open="(" separator="," close=")">
+            		#{id}
+        		</foreach>
+			</if>
+		</where>
+		ORDER BY a.DUE_DATE
+	</select>
+	
+	
+	<select id="findById" resultType="Assignment">
+		SELECT a.ASSIGNMENT_ID, a.COURSE_ID, a.TITLE, a.CONTENT, a.DUE_DATE
+		FROM TB_ASSIGNMENT a
+		WHERE a.ASSIGNMENT_ID = #{assignmentId}
+	</select>
+	
+	<insert id="insert" parameterType="Assignment"
+			useGeneratedKeys="true" keyProperty="assignmentId" keyColumn="ASSIGNMENT_ID">
+		INSERT INTO TB_ASSIGNMENT(COURSE_ID, TITLE, CONTENT, DUE_DATE)
+		VALUES (#{courseId}, #{title}, #{content}, #{dueDate})
+	</insert>
+</mapper>
