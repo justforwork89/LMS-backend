@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.dy.lms.mapper.EnrollmentMapper">
+	
+	<sql id="selectEnroll">
+		SELECT e.ENROLL_ID, e.STUDENT_ID, e.COURSE_ID, e.APPLIED_AT,
+			e.STATUS_CD, c.CODE_NAME as STATUS_NAME
+		FROM TB_ENROLL e
+		LEFT JOIN TB_COMMON_CODE c
+		ON c.GROUP_CD = 'ENROLL_STATUS' AND c.CODE = e.STATUS_CD
+	</sql>
+	
+	<select id="findAll" resultType="Enrollment">
+		<include refid="selectEnroll"/>
+		<where>
+			<if test="studentId != null and studentId != ''">
+			e.STUDENT_ID = #{studentId}
+			</if>
+		</where>
+		ORDER BY e.ENROLL_ID DESC
+	</select>
+	
+	<select id="findByStudentAndCourse" resultType="Enrollment">
+		<include refid="selectEnroll"/>
+		WHERE e.STUDENT_ID = #{studentId} AND e.COURSE_ID = #{courseId}
+	</select>	
+	
+	<select id="findById" resultType="Enrollment">
+		<include refid="selectEnroll"/>
+		WHERE e.ENROLL_ID = #{enrollId}
+	</select>
+	
+	<insert id="insert" parameterType="Enrollment"
+	            useGeneratedKeys="true" keyProperty="enrollId" keyColumn="ENROLL_ID">
+	        INSERT INTO TB_ENROLL (STUDENT_ID, COURSE_ID, STATUS_CD)
+	        VALUES (#{studentId}, #{courseId}, #{statusCd})
+	</insert>
+	
+	<update id="increaseEnrolledCnt">
+    	UPDATE TB_COURSE
+    	SET ENROLLED_CNT = ENROLLED_CNT + 1
+    	WHERE COURSE_ID = #{courseId} AND ENROLLED_CNT &lt; CAPACITY
+	</update>
+	
+	<update id="decreaseEnrolledCnt">
+    	UPDATE TB_COURSE
+    	SET ENROLLED_CNT = ENROLLED_CNT - 1
+    	WHERE COURSE_ID = #{courseId}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM TB_ENROLL WHERE ENROLL_ID = #{enrollId}
+	</delete>
+	
+	<update id="updateStatus">
+		UPDATE TB_ENROLL
+		SET STATUS_CD = #{statusCd}
+		WHERE ENROLL_ID = #{enrollId}
+	</update>
+</mapper>
