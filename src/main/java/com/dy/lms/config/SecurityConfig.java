@@ -44,6 +44,7 @@ public class SecurityConfig {
 		                .requestMatchers(HttpMethod.POST, "/api/codes").hasRole("ADMIN")
 		                .requestMatchers(HttpMethod.PUT, "/api/codes/**").hasRole("ADMIN")
 		                .requestMatchers(HttpMethod.DELETE, "/api/codes/**").hasRole("ADMIN")
+		                .requestMatchers(HttpMethod.POST, "/api/submissions").hasRole("STUDENT")
 		                .anyRequest().authenticated())
 		            .exceptionHandling(e -> e
 		                .authenticationEntryPoint((req, res, ex) -> {

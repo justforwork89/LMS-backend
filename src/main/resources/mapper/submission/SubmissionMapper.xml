@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.dy.lms.mapper.SubmissionMapper">
+	<select id="findAll" resultType="Submission">
+		SELECT s.SUBMISSION_ID, s.ASSIGNMENT_ID, s.STUDENT_ID, s.CONTENT, s.FILE_NAME,
+       		s.SUBMITTED_AT, s.SCORE, s.FEEDBACK, s.STATUS_CD
+		FROM TB_SUBMISSION s
+		<where>
+			<if test="assignmentId != null">
+			s.ASSIGNMENT_ID = #{assignmentId}
+			</if>
+			<if test="studentId != null and studentId != ''">
+			AND s.STUDENT_ID = #{studentId}
+			</if>
+		</where>
+		ORDER BY s.SUBMITTED_AT
+	</select>
+	
+	<select id="findById" resultType="Submission">
+		SELECT s.SUBMISSION_ID, s.ASSIGNMENT_ID, s.STUDENT_ID, s.CONTENT, s.FILE_NAME,
+       		s.SUBMITTED_AT, s.SCORE, s.FEEDBACK, s.STATUS_CD
+		FROM TB_SUBMISSION s
+		WHERE s.SUBMISSION_ID = #{submissionId}
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="submissionId" keyColumn="SUBMISSION_ID">
+		INSERT INTO TB_SUBMISSION (ASSIGNMENT_ID, STUDENT_ID, CONTENT, FILE_NAME)
+		VALUES (#{assignmentId}, #{studentId}, #{content}, #{fileName})
+	</insert>
+	
+	
+	<update id="update">
+		UPDATE TB_SUBMISSION s
+		SET s.CONTENT = #{content},
+			s.FILE_NAME = #{fileName},
+			s.SUBMITTED_AT = #{submittedAt}
+		WHERE s.SUBMISSION_ID = #{submissionId}
+	</update>
+	
+	<update id="grade">
+		UPDATE TB_SUBMISSION s
+		SET s.SCORE = #{score},
+			s.FEEDBACK = #{feedback},
+			s.STATUS_CD = #{statusCd}
+		WHERE s.SUBMISSION_ID = #{submissionId}
+	</update>
+</mapper>

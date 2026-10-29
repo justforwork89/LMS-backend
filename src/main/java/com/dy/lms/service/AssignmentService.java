@@ -32,6 +32,15 @@ public class AssignmentService {
         return assignmentMapper.findAll(courseIds).stream().map(AssignmentResponse::from).toList();
     }
 	
+	public Assignment findById(Long assignmentId) {
+		Assignment a = assignmentMapper.findById(assignmentId);
+		if (a == null) {
+			throw new BusinessException(HttpStatus.NOT_FOUND, "존재하지 않는 과제입니다.");
+		}
+		
+		return a;
+	}
+	
 	@Transactional
 	public AssignmentResponse create(AssignmentRequest req, String userId, boolean isAdmin) {
 		Long courseId = req.courseId();
