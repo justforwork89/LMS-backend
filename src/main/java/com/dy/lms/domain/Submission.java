@@ -19,4 +19,5 @@ public class Submission {
 	private String feedback;
 	private LocalDateTime submittedAt;
 	private String statusCd;
+	private String studentName;
 }

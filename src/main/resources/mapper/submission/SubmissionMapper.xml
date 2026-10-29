@@ -5,8 +5,10 @@
 <mapper namespace="com.dy.lms.mapper.SubmissionMapper">
 	<select id="findAll" resultType="Submission">
 		SELECT s.SUBMISSION_ID, s.ASSIGNMENT_ID, s.STUDENT_ID, s.CONTENT, s.FILE_NAME,
-       		s.SUBMITTED_AT, s.SCORE, s.FEEDBACK, s.STATUS_CD
+       		s.SUBMITTED_AT, s.SCORE, s.FEEDBACK, s.STATUS_CD, u.USER_NAME AS STUDENT_NAME
 		FROM TB_SUBMISSION s
+		LEFT JOIN TB_USER u
+		ON s.STUDENT_ID = u.USER_ID
 		<where>
 			<if test="assignmentId != null">
 			s.ASSIGNMENT_ID = #{assignmentId}
@@ -20,8 +22,10 @@
 	
 	<select id="findById" resultType="Submission">
 		SELECT s.SUBMISSION_ID, s.ASSIGNMENT_ID, s.STUDENT_ID, s.CONTENT, s.FILE_NAME,
-       		s.SUBMITTED_AT, s.SCORE, s.FEEDBACK, s.STATUS_CD
+       		s.SUBMITTED_AT, s.SCORE, s.FEEDBACK, s.STATUS_CD, u.USER_NAME AS STUDENT_NAME
 		FROM TB_SUBMISSION s
+		LEFT JOIN TB_USER u
+		ON s.STUDENT_ID = u.USER_ID
 		WHERE s.SUBMISSION_ID = #{submissionId}
 	</select>
 	
