@@ -22,6 +22,9 @@ import lombok.RequiredArgsConstructor;
 // 업무 규칙(검증, 권한, 상태 규칙)을 처리합니다.
 public class CourseService {
 
+    /** 전공 미지정 시 기본값 (공통코드 MAJOR의 '공통'). */
+    private static final String DEFAULT_MAJOR = "40";
+
     private final CourseMapper courseMapper;
     private final UserService userService;
     private final CommonCodeService commonCodeService;
@@ -122,7 +125,7 @@ public class CourseService {
         Course c = new Course();
         c.setCourseName(req.courseName());
         c.setDescription(req.description());
-        c.setMajor(req.major() == null || req.major().isBlank() ? "공통" : req.major());
+        c.setMajor(req.major() == null || req.major().isBlank() ? DEFAULT_MAJOR : req.major());
         c.setStartDate(req.startDate());
         c.setEndDate(req.endDate());
         c.setCapacity(req.capacity());
