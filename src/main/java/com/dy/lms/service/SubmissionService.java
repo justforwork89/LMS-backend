@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dy.lms.common.BusinessException;
 import com.dy.lms.domain.Assignment;
 import com.dy.lms.domain.Submission;
+import com.dy.lms.domain.code.SubmissionCode;
 import com.dy.lms.dto.SubmissionResponse;
 import com.dy.lms.mapper.SubmissionMapper;
 
@@ -108,7 +109,7 @@ public class SubmissionService {
 		s.setSubmissionId(submissionId);
 		s.setScore(score);
 		s.setFeedback(feedback);
-		s.setStatusCd("20");
+		s.setStatusCd(SubmissionCode.GRADED.getValue());
 		
 		submissionMapper.grade(s);
 		

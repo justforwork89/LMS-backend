@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dy.lms.common.BusinessException;
 import com.dy.lms.domain.Enrollment;
+import com.dy.lms.domain.code.CourseCode;
+import com.dy.lms.domain.code.EnrollmentCode;
 import com.dy.lms.dto.CourseResponse;
 import com.dy.lms.dto.EnrollmentResponse;
 import com.dy.lms.mapper.EnrollmentMapper;
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class EnrollmentService {
+	
 	private final EnrollmentMapper enrollmentMapper;
 	private final CourseService courseService;
 	
@@ -31,7 +34,7 @@ public class EnrollmentService {
 		Enrollment e = new Enrollment();
 		e.setStudentId(studentId);
 		e.setCourseId(courseId);
-		e.setStatusCd("10");
+		e.setStatusCd(EnrollmentCode.ENROLL.getValue());
 		
 		enrollmentMapper.insert(e);
 		
@@ -44,7 +47,7 @@ public class EnrollmentService {
 		String studentId = origin.getStudentId();
 		checkCourseAndReserve(courseId, studentId);
 		
-		if(!origin.getStatusCd().equals("30")) {
+		if(!origin.getStatusCd().equals(EnrollmentCode.REJECTED.getValue())) {
 			enrollmentMapper.decreaseEnrolledCnt(origin.getCourseId());
 		}
 		enrollmentMapper.delete(enrollId);
@@ -53,7 +56,7 @@ public class EnrollmentService {
 		
 		e.setStudentId(studentId);
 		e.setCourseId(courseId);
-		e.setStatusCd("10");
+		e.setStatusCd(EnrollmentCode.ENROLL.getValue());
 		
 		enrollmentMapper.insert(e);
 		
@@ -63,7 +66,7 @@ public class EnrollmentService {
 	@Transactional
 	public void cancel(Long enrollId, String userId, boolean isAdmin) {
 		Enrollment origin = checkIdentity(enrollId, userId, isAdmin);
-		if(!origin.getStatusCd().equals("30")) {
+		if(!origin.getStatusCd().equals(EnrollmentCode.REJECTED.getValue())) {
 			enrollmentMapper.decreaseEnrolledCnt(origin.getCourseId());
 		}
 		enrollmentMapper.delete(enrollId);
@@ -76,13 +79,13 @@ public class EnrollmentService {
 		}
 		Enrollment origin = checkIdentity(enrollId, null, isAdmin);
 		
-		if (!statusCd.equals("20") && !statusCd.equals("30")) {
+		if (!statusCd.equals(EnrollmentCode.ACCEPT.getValue()) && !statusCd.equals(EnrollmentCode.REJECTED.getValue())) {
 			throw new BusinessException(HttpStatus.BAD_REQUEST, "승인 또는 반려만 선택 할 수 있습니다.");
 		}
-		if (!origin.getStatusCd().equals("10")) {
+		if (!origin.getStatusCd().equals(EnrollmentCode.ENROLL.getValue())) {
 			throw new BusinessException(HttpStatus.CONFLICT, "이미 처리된 신청입니다.");
 		}
-		if (statusCd.equals("30")) {
+		if (statusCd.equals(EnrollmentCode.REJECTED.getValue())) {
 			enrollmentMapper.decreaseEnrolledCnt(origin.getCourseId());
 		}
 		
@@ -104,7 +107,7 @@ public class EnrollmentService {
 	private void checkCourseAndReserve(Long courseId, String studentId) {
 		CourseResponse course = courseService.findById(courseId);
 		
-		if (List.of("40", "50").contains(course.statusCode())) {
+		if (List.of(CourseCode.ENDED.getValue(), CourseCode.CLOSED.getValue()).contains(course.statusCode())) {
 			throw new BusinessException(HttpStatus.GONE, "이미 폐강 또는 종료된 강의입니다.");
 		}
 		if (enrollmentMapper.findByStudentAndCourse(studentId, courseId) != null) {

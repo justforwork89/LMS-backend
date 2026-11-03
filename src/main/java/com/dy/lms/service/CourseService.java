@@ -1,19 +1,21 @@
 package com.dy.lms.service;
 
+import java.util.List;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dy.lms.common.BusinessException;
 import com.dy.lms.domain.Course;
+import com.dy.lms.domain.code.CourseCode;
 import com.dy.lms.dto.CommonCodeResponse;
 import com.dy.lms.dto.CourseRequest;
 import com.dy.lms.dto.CourseResponse;
 import com.dy.lms.mapper.CourseMapper;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +51,7 @@ public class CourseService {
 
         Course c = toCourse(req);
         c.setInstructorId(instructorId);
-        c.setStatusCd(req.statusCd() == null || req.statusCd().isBlank() ? "10" : req.statusCd());
+        c.setStatusCd(req.statusCd() == null || req.statusCd().isBlank() ? CourseCode.PREPARING.getValue() : req.statusCd());
         courseMapper.insert(c);                       // 생성된 courseId가 c에 채워짐
         return CourseResponse.from(courseMapper.findById(c.getCourseId()));
     }
