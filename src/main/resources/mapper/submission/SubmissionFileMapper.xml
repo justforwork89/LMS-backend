@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- SubmissionFileMapper.java 메서드에 대응하는 실제 SQL입니다. -->
+<mapper namespace="com.dy.lms.mapper.SubmissionFileMapper">
+    <sql id="columns">
+        FILE_ID, SUBMISSION_ID, ORIGIN_NAME, SAVE_NAME, FILE_PATH,
+        FILE_SIZE, CONTENT_TYPE, REG_DT
+    </sql>
+    <insert id="insert" parameterType="SubmissionFile"
+            useGeneratedKeys="true" keyProperty="fileId" keyColumn="FILE_ID">
+        INSERT INTO TB_SUBMISSION_FILE (SUBMISSION_ID, ORIGIN_NAME, SAVE_NAME, FILE_PATH,
+                                        FILE_SIZE, CONTENT_TYPE)
+        VALUES (#{submissionId}, #{originName}, #{saveName}, #{filePath},
+                #{fileSize}, #{contentType})
+    </insert>
+    <select id="findBySubmissionId" resultType="SubmissionFile">
+        SELECT <include refid="columns"/>
+          FROM TB_SUBMISSION_FILE
+         WHERE SUBMISSION_ID = #{submissionId}
+         ORDER BY FILE_ID
+    </select>
+    <select id="findById" resultType="SubmissionFile">
+        SELECT <include refid="columns"/>
+          FROM TB_SUBMISSION_FILE
+         WHERE FILE_ID = #{fileId}
+    </select>
+    <delete id="delete">
+        DELETE FROM TB_SUBMISSION_FILE WHERE FILE_ID = #{fileId}
+    </delete>
+</mapper>

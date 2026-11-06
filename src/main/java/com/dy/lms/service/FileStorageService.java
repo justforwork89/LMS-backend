@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-// 디스크에 파일을 넣고, 찾고, 지웁니다. (DB는 CourseFileService 담당)
+//디스크에 파일을 넣고, 찾고, 지웁니다. (DB는 CourseFileService·SubmissionFileService 담당)
 public class FileStorageService {
 
     private static final DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyy/MM");
@@ -52,12 +52,19 @@ public class FileStorageService {
         }
     }
 
-    /** ② 저장: D:/lms-files/course/{강의ID}/{연}/{월}/{UUID}.{확장자} */
+    /** ② 저장(참고자료): D:/lms-files/course/{강의ID}/{연}/{월}/{UUID}.{확장자} */
     public StoredFile store(MultipartFile file, Long courseId) {
+        return store(file, "course/" + courseId);
+    }
+    
+    
+    /** ②-1 저장(폴더 지정): D:/lms-files/{folder}/{연}/{월}/{UUID}.{확장자}
+     *  과제 제출은 folder = "submission/{제출ID}" */
+    public StoredFile store(MultipartFile file, String folder) {
         String originName = originName(file);
         String ext = StringUtils.getFilenameExtension(originName).toLowerCase(Locale.ROOT);
         String saveName = UUID.randomUUID() + "." + ext;
-        String relativeDir = "course/" + courseId + "/" + LocalDate.now().format(YEAR_MONTH);
+        String relativeDir = folder + "/" + LocalDate.now().format(YEAR_MONTH);
 
         Path dir = safeResolve(relativeDir);
         try {

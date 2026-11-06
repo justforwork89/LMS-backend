@@ -26,4 +26,7 @@ server:
 app:
   file:
     max-files-per-upload: 20
+    submission:
+      max-files: 5        # 최대 5개
+      max-total-mb: 500    # 합쳐서 500MB		
     allowed-extensions: pdf,ppt,pptx,doc,docx,xls,xlsx,hwp,hwpx,txt,md,zip,png,jpg,jpeg,mp4
