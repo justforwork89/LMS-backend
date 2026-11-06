@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: DY_LMS
@@ -8,9 +7,23 @@ spring:
     default: local        # 프로필 미지정 시 local 사용
   flyway:
     locations: classpath:db/sql
+  # ▼ 추가: 파일 업로드 용량
+  servlet:
+    multipart:
+      max-file-size: 500MB      # 파일 1개 최대
+      max-request-size: 500MB   # 한 번에 올리는 전체 최대
 mybatis:
   type-aliases-package: com.dy.lms.domain
   mapper-locations: classpath:mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true   # USER_NAME → userName 자동 매핑
     jdbc-type-for-null: 'NULL'
+# ▼ 추가: 서버가 받을 수 있는 파일 개수
+server:
+  tomcat:
+    max-part-count: 30
+# ▼ 추가: 첨부파일 규칙
+app:
+  file:
+    max-files-per-upload: 20
+    allowed-extensions: pdf,ppt,pptx,doc,docx,xls,xlsx,hwp,hwpx,txt,md,zip,png,jpg,jpeg,mp4

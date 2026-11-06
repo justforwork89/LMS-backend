@@ -31,13 +31,14 @@ public class CourseController {
     @GetMapping
     public ApiResponse<List<CourseResponse>> list(
             @RequestParam(name = "keyword", required = false) String keyword,
-            @RequestParam(name = "status", required = false) String status) {
-        return ApiResponse.ok(courseService.findAll(keyword, status));
+            @RequestParam(name = "status", required = false) String status,
+            Authentication auth) {
+        return ApiResponse.ok(courseService.findAll(keyword, status, isStudent(auth), myCourseOwner(auth)));
     }
     
     @GetMapping("/{id}")
-    public ApiResponse<CourseResponse> detail(@PathVariable("id") Long id) {
-        return ApiResponse.ok(courseService.findById(id));
+    public ApiResponse<CourseResponse> detail(@PathVariable("id") Long id, Authentication auth) {
+        return ApiResponse.ok(courseService.findByIdFor(id, isStudent(auth), myCourseOwner(auth)));
     }
 
     @PostMapping
@@ -60,5 +61,17 @@ public class CourseController {
     private boolean isAdmin(Authentication auth) {
         return auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    private boolean isStudent(Authentication auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
+    }
+
+    /** 강사면 본인 아이디, 관리자·학생이면 null */
+    private String myCourseOwner(Authentication auth) {
+        boolean instructor = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_INSTRUCTOR"));
+        return instructor ? auth.getName() : null;
     }
 }

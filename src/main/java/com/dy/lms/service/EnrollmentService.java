@@ -1,5 +1,7 @@
 package com.dy.lms.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -109,6 +111,13 @@ public class EnrollmentService {
 		
 		if (List.of(CourseCode.ENDED.getValue(), CourseCode.CLOSED.getValue()).contains(course.statusCode())) {
 			throw new BusinessException(HttpStatus.GONE, "이미 폐강 또는 종료된 강의입니다.");
+		}
+		// 승인 전(준비중)이거나 오늘이 모집 기간 밖이면 신청 불가 (교육 중이어도 모집 기간이면 가능)
+		LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+		if (CourseCode.PREPARING.getValue().equals(course.statusCode())
+				|| today.isBefore(course.recruitStartDate())
+				|| today.isAfter(course.recruitEndDate())) {
+			throw new BusinessException(HttpStatus.BAD_REQUEST, "모집 기간이 아닌 강의입니다.");
 		}
 		if (enrollmentMapper.findByStudentAndCourse(studentId, courseId) != null) {
 			throw new BusinessException(HttpStatus.CONFLICT, "이미 신청된 과목입니다.");

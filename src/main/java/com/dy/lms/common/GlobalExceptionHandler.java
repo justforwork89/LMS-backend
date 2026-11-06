@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,5 +53,16 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handleUnreadable(HttpMessageNotReadableException e) {
 		return ResponseEntity.badRequest()
 				.body(ApiResponse.fail("요청 본문(JSON) 형식이 올바르지 않습니다."));
+	}
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<ApiResponse<Void>> handleMaxUpload(MaxUploadSizeExceededException e) {
+		return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE)
+				.body(ApiResponse.fail("한 번에 올릴 수 있는 용량은 500MB까지입니다."));
+	}
+
+	@ExceptionHandler(MultipartException.class)
+	public ResponseEntity<ApiResponse<Void>> handleMultipart(MultipartException e) {
+		return ResponseEntity.badRequest()
+				.body(ApiResponse.fail("파일이 너무 많거나 업로드 요청이 올바르지 않습니다."));
 	}
 }

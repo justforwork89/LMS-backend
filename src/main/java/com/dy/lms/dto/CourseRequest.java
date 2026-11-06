@@ -11,6 +11,8 @@ public record CourseRequest(
         String description,
         String instructorId,          // 관리자만 지정 가능, 강사는 무시됨
         String major,
+        @NotNull(message = "모집 시작일을 입력하세요.") LocalDate recruitStartDate,
+        @NotNull(message = "모집 종료일을 입력하세요.") LocalDate recruitEndDate,
         @NotNull(message = "시작일을 입력하세요.") LocalDate startDate,
         @NotNull(message = "종료일을 입력하세요.") LocalDate endDate,
         @Min(value = 1, message = "정원은 1명 이상이어야 합니다.") int capacity,

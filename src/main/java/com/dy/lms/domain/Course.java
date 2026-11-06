@@ -16,6 +16,8 @@ public class Course {
     private String instructorId;
     private String instructorName;   // 조인 결과
     private String major;
+    private LocalDate recruitStartDate;   // 모집 시작일
+    private LocalDate recruitEndDate;     // 모집 종료일
     private LocalDate startDate;
     private LocalDate endDate;
     private int capacity;

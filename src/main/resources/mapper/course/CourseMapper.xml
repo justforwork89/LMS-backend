@@ -8,7 +8,8 @@
     <sql id="selectCourse">
         SELECT c.COURSE_ID, c.COURSE_NAME, c.DESCRIPTION, c.INSTRUCTOR_ID,
                u.USER_NAME AS INSTRUCTOR_NAME,
-               c.MAJOR, c.START_DATE, c.END_DATE, c.CAPACITY, c.ENROLLED_CNT,
+               c.MAJOR, c.RECRUIT_START_DATE, c.RECRUIT_END_DATE,
+               c.START_DATE, c.END_DATE, c.CAPACITY, c.ENROLLED_CNT,
                c.STATUS_CD, s.CODE_NAME AS STATUS_NAME
         FROM TB_COURSE c
         JOIN TB_USER u ON u.USER_ID = c.INSTRUCTOR_ID
@@ -30,6 +31,12 @@
             <if test="statusCd != null and statusCd != ''">
                 AND c.STATUS_CD = #{statusCd}
             </if> 
+            <if test="hidePreparing">
+                AND c.STATUS_CD &lt;&gt; '10'
+            </if>
+            <if test="instructorId != null">
+                AND c.INSTRUCTOR_ID = #{instructorId}
+            </if>
         ORDER BY c.COURSE_ID DESC
     </select>
 
@@ -46,8 +53,10 @@
     <insert id="insert" parameterType="Course"
             useGeneratedKeys="true" keyProperty="courseId" keyColumn="COURSE_ID">
         INSERT INTO TB_COURSE (COURSE_NAME, DESCRIPTION, INSTRUCTOR_ID, MAJOR,
+                               RECRUIT_START_DATE, RECRUIT_END_DATE,
                                START_DATE, END_DATE, CAPACITY, STATUS_CD)
         VALUES (#{courseName}, #{description}, #{instructorId}, #{major},
+                #{recruitStartDate}, #{recruitEndDate},
                 #{startDate}, #{endDate}, #{capacity}, #{statusCd})
     </insert>
 
@@ -56,11 +65,34 @@
         SET COURSE_NAME = #{courseName},
             DESCRIPTION = #{description},
             MAJOR = #{major},
+            RECRUIT_START_DATE = #{recruitStartDate},
+            RECRUIT_END_DATE = #{recruitEndDate},
             START_DATE = #{startDate},
             END_DATE = #{endDate},
             CAPACITY = #{capacity},
             STATUS_CD = #{statusCd}
         WHERE COURSE_ID = #{courseId}
+    </update>
+
+    <!-- 오늘 날짜로 정해지는 상태 (위에서부터 먼저 맞는 것)
+         종료 > 진행중 > 모집예정 > 모집중 > 모집마감 -->
+    <sql id="statusByDate">
+        CASE
+            WHEN END_DATE &lt; TRUNC(SYSDATE)            THEN '40'
+            WHEN START_DATE &lt;= TRUNC(SYSDATE)         THEN '30'
+            WHEN RECRUIT_START_DATE &gt; TRUNC(SYSDATE)  THEN '15'
+            WHEN RECRUIT_END_DATE &gt;= TRUNC(SYSDATE)   THEN '20'
+            ELSE '25'
+        END
+    </sql>
+
+    <!-- 승인된 강의(모집예정·모집중·모집마감·진행중)만 날짜에 맞춰 상태 변경.
+         준비중(승인 전)·종료·폐강은 건드리지 않음 -->
+    <update id="syncStatusByDate">
+        UPDATE TB_COURSE
+           SET STATUS_CD = <include refid="statusByDate"/>
+         WHERE STATUS_CD IN ('15', '20', '25', '30')
+           AND STATUS_CD &lt;&gt; <include refid="statusByDate"/>
     </update>
 
 </mapper>

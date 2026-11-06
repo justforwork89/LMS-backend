@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- CourseFileMapper.java 메서드에 대응하는 실제 SQL입니다. -->
+<mapper namespace="com.dy.lms.mapper.CourseFileMapper">
+
+    <sql id="columns">
+        FILE_ID, COURSE_ID, ORIGIN_NAME, SAVE_NAME, FILE_PATH,
+        FILE_SIZE, CONTENT_TYPE, UPLOADER_ID, REG_DT
+    </sql>
+
+    <insert id="insert" parameterType="CourseFile"
+            useGeneratedKeys="true" keyProperty="fileId" keyColumn="FILE_ID">
+        INSERT INTO TB_COURSE_FILE (COURSE_ID, ORIGIN_NAME, SAVE_NAME, FILE_PATH,
+                                    FILE_SIZE, CONTENT_TYPE, UPLOADER_ID)
+        VALUES (#{courseId}, #{originName}, #{saveName}, #{filePath},
+                #{fileSize}, #{contentType}, #{uploaderId})
+    </insert>
+
+    <select id="findByCourseId" resultType="CourseFile">
+        SELECT <include refid="columns"/>
+          FROM TB_COURSE_FILE
+         WHERE COURSE_ID = #{courseId}
+         ORDER BY FILE_ID
+    </select>
+
+    <select id="findById" resultType="CourseFile">
+        SELECT <include refid="columns"/>
+          FROM TB_COURSE_FILE
+         WHERE FILE_ID = #{fileId}
+    </select>
+
+    <delete id="delete">
+        DELETE FROM TB_COURSE_FILE WHERE FILE_ID = #{fileId}
+    </delete>
+
+    <delete id="deleteByCourseId">
+        DELETE FROM TB_COURSE_FILE WHERE COURSE_ID = #{courseId}
+    </delete>
+</mapper>

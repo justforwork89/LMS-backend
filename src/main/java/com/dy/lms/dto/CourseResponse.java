@@ -9,6 +9,7 @@ import com.dy.lms.domain.Course;
 public record CourseResponse(
         Long id, String name, String description,
         String instructorId, String instructorName, String major,
+        LocalDate recruitStartDate, LocalDate recruitEndDate,
         LocalDate startDate, LocalDate endDate,
         int capacity, int enrolledCount,
         String statusCode, String statusName) {
@@ -17,6 +18,7 @@ public record CourseResponse(
         return new CourseResponse(
                 c.getCourseId(), c.getCourseName(), c.getDescription(),
                 c.getInstructorId(), c.getInstructorName(), c.getMajor(),
+                c.getRecruitStartDate(), c.getRecruitEndDate(),
                 c.getStartDate(), c.getEndDate(),
                 c.getCapacity(), c.getEnrolledCnt(),
                 c.getStatusCd(), c.getStatusName());
